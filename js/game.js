@@ -22,7 +22,12 @@
     var moveSpeed = 1;
     var firstSpawn = true;
 
-    var playButton = document.getElementById('PlayButton');
+    //Images
+    var parallaxFront;
+    var parallaxBack;
+
+    //Irrelevant
+    //var playButton = document.getElementById('PlayButton');
 
     //Segment variables
     var segmentImage1;
@@ -33,30 +38,37 @@
     var oldSegments = [];
 
 
-    window.addEventListener('keydown',function(e){
+    window.addEventListener('mousedown',function(e){
 
         if(gameState == GAME_STATE.GAME){
-            if(e.keyCode == 32){     //Space was pressed
+            //1) Stop the current segment and check to see if it stopped in a valid place.
+            currentSegment.StopSegment();
+
+            if(currentSegment.CheckEdges()){
                 
-                //Two things need to happen.
+                score++;                  //Incrememnt the score.
+                moveSpeed += .5;          //Increase the speed each segment travels
+                currentSegment.Clip;      //Set the width and clipping of the segment
 
-                //1) Stop the current segment and check to see if it stopped in a valid place.
-                currentSegment.speed = 0;
+                oldSegments.push(currentSegment);   //Add the segment to the list of old.
 
-                if(currentSegment.CheckEdges){
-                    
-                    score++;                  //Incrememnt the score.
-                    moveSpeed += .5;          //Increase the speed each segment travels
-                    currentSegment.Clip;      //Set the width and clipping of the segment
+                tempSegment = currentSegment;
+                currentSegment = new Segment({
+                    prevSegment: tempSegment,
+                    ctx: ctx,
+                    image: segmentImage1,
+                    speed: moveSpeed,
+                    spawnDirection: Math.random()
+                });
+                currentSegment.Draw();  //Draw the new segment.
 
-                    oldSegments.push(currentSegment);   //Add the segment to the list of old.
-                    currentSegment = new Segment({prevSegment: currentSegment,url: 'url',ctx:ctx,speed:moveSpeed}); //Create the new segment
-                    currentSegment.Draw();  //Draw the new segment.
-
+                //Shift the old segments down
+                for(var i = 0; i < oldSegments.length; i++){
+                    oldSegments[i].ShiftDown();
                 }
-                else{
-                    gameState = GAME_STATE.GAMEOVER;
-                }
+            }
+            else{
+                gameState = GAME_STATE.GAMEOVER;
             }
         }
     });
@@ -65,9 +77,26 @@
     //Initialize function
     window.onload = function()
     {
-        //Draw base.
+        //Load in the image files
+        parallaxBack = new Image();
+        parallaxBack.src = "media/skyline2.png";
+        parallaxFront = new Image();
+        parallaxFront.src = "media/skyline1.png";
+        segmentImage1 = new Image();
+        segmentImage1.src = "media/segment1.png";
 
         gameState = GAME_STATE.GAME;    //Set default game state to menu.
+
+        //Create the first segment
+        currentSegment = new Segment({
+            prevSegment: null,
+            ctx: ctx,
+            image: segmentImage1,
+            speed: 10,
+            spawnDirection: 1
+        });
+
+        //Begin the main game loop
         Update();
     }
 
@@ -78,28 +107,44 @@
 
         switch(gameState){
             case GAME_STATE.MENU:
-                //DrawMenu(ctx);
+                DrawMenu();
                 break;
             case GAME_STATE.GAME:
-               // DrawHUD(ctx,score);
-
-               if(firstSpawn == true){  //If this is our first spawned segment.
-                   //Create the first segment
-                   console.log("Looping?");
-                   currentSegment = new Segment({prevSegment: null, url: 'url', ctx:ctx, speed:moveSpeed}); //Create segment
-                   firstSpawn = false;  //Set this to false so it doesn't run again. (BROKEN??)
-               }
-
-               currentSegment.Update();
+                //Update the current segment
+                currentSegment.Update();
+                //Draw the segments
+                currentSegment.Draw();
+                for(var i = 0; i < oldSegments.length; i++){
+                    oldSegments[i].Draw();
+                }
 
                 break;
             case GAME_STATE.GAMEOVER:
-                //DrawGameOver(ctx,score);
                 break;
         }
     }
     
+    /* Drawing functions */
 
+    function DrawMenu()  //Draw the items that will be displayed as the menu.
+    {
+        console.log("draw");
+        ctx.drawImage(parallaxBack, 0, 0, '100%', '100%');
+        ctx.drawImage(parallaxFront, 0, 0, 300, 100);
+        ctx.fillStyle = 'yellow';
+        ctx.font = "30px Arial";
+        ctx.fillText("Testing",canvas.clientWidth/2,canvas.clientHeight/4);
+    }
+
+    function DrawGameOver()  //Draw the items we want to display when the game is over.
+    {
+
+    }
+
+    function DrawHUD()
+    {
+
+    }
 
 
 

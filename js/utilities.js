@@ -1,9 +1,8 @@
 /*
-    Authors: Juri Kiin and Nikolas Whiteside
+    Authors: Juri Kiin, Nikolas Whiteside
     Function: This file is used for storing helper funcitons and anything that
     doesn't directly relate to the game loop.
-
-    4/4/2017
+    Date: 4/5/2016
 */
 
 function DrawMenu(ctx)  //Draw the items that will be displayed as the menu.
