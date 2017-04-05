@@ -14,10 +14,16 @@ class Segment{
         //Segment at the top of the building
         this.prevSegment = options.prevSegment;
 
+        //Default values if prevSegment = null (first segment of the game)
+        if(options.prevSegment == null){
+            this.width = 100;   //Default value?
+        }
+        else{
+             this.width = this.prevSegment.clipWidth;
+        }
         //Sprite image
         this.src = options.url;
         this.speed = options.speed;
-        this.width = this.prevSegment.clipWidth;
         this.height = 50;
         this.clipWidth = this.width;
         this.clipHeight = this.height;
