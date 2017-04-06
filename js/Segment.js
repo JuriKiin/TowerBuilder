@@ -35,8 +35,8 @@ class Segment{
         //Spawn left/right/center
         if(options.spawnDirection == 0){
             this.XPos = 0;
-        }else if(options.spawnDirection == 2)  {
-            this.XPos = this.ctx.canvas.clientWidth - this.width;
+        }else if(options.spawnDirection == 1)  {
+            this.XPos = this.ctx.canvas.clientWidth - this.width - 1;
         }else{
             this.XPos = this.ctx.canvas.clientWidth/2 - this.width/2;
         }
@@ -177,6 +177,12 @@ class Segment{
     Draw(){
         //this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.ClipHeight, this.XPos, this.YPos, this.Width, this.Height);
         this.ctx.drawImage(this.Image, this.XPos, this.YPos, this.Width, this.Height);
+        console.log("clipX: " + this.ClipX);
+        console.log("X: " + this.XPos);
+        console.log("clipY: " + this.ClipY);
+        console.log("Y: " + this.YPos);
+        console.log(this.ClipWidth);
+        console.log(this.Width);
     }
 
 }

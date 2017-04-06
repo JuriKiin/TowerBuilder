@@ -25,9 +25,10 @@
     //Images
     var parallaxFront;
     var parallaxBack;
+    var background;
 
-    //Irrelevant
-    //var playButton = document.getElementById('PlayButton');
+    //Shift-variable for background
+    var backgroundShift;
 
     //Segment variables
     var segmentImage1;
@@ -65,10 +66,21 @@
             if(currentSegment.CheckEdges()){
                 
                 score++;                  //Increment the score.
-                moveSpeed += .5;          //Increase the speed each segment travels
+                moveSpeed += .2;          //Increase the speed each segment travels
                 currentSegment.Clip;      //Set the width and clipping of the segment
 
+                //Move the background with the tower
+                if(backgroundShift < 800){
+                    backgroundShift += 50;
+                }
+
                 oldSegments.push(currentSegment);   //Add the segment to the list of old.
+
+                if(Math.random() < 0.5){
+                    var tempDir = 0;
+                }else{
+                    tempDir = 1;
+                }
 
                 var tempSegment = currentSegment;
                 currentSegment = new Segment({
@@ -76,7 +88,7 @@
                     ctx: ctx,
                     image: segmentImage1,
                     speed: moveSpeed,
-                    spawnDirection:  0//Math.random()
+                    spawnDirection: tempDir
                 });
 
                 //Shift the old segments down
@@ -96,12 +108,7 @@
     window.onload = function()
     {
         //Load in the image files
-        parallaxBack = new Image();
-        parallaxBack.src = "media/skyline2.png";
-        parallaxFront = new Image();
-        parallaxFront.src = "media/skyline1.png";
-        segmentImage1 = new Image();
-        segmentImage1.src = "media/segment1.png";
+        LoadImages();
 
         gameState = GAME_STATE.MENU;    //Set default game state to menu.
 
@@ -111,12 +118,28 @@
             ctx: ctx,
             image: segmentImage1,
             speed: 0,
-            spawnDirection: 3,
+            spawnDirection: 2,
             moving: true
         });
 
         //Begin the main game loop
         Update();
+    }
+
+    //Loads images from the media folder
+    function LoadImages(){
+        //Load all image files
+        background = new Image();
+        background.src = "media/background.png";
+        parallaxBack = new Image();
+        parallaxBack.src = "media/skyline2.png";
+        parallaxFront = new Image();
+        parallaxFront.src = "media/skyline1.png";
+        segmentImage1 = new Image();
+        segmentImage1.src = "media/segment1.png";
+
+        //Initialize the backgroundShift value
+        backgroundShift = 0;
     }
 
     //Runs the main game loop
@@ -165,8 +188,9 @@
 
     function DrawHUD(){
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-        ctx.drawImage(parallaxBack, 0, 500, 450, 300);
-        ctx.drawImage(parallaxFront, 0, 550,450, 300);
+        ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
+        ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
         ctx.font = '50pt Arial';
         ctx.fillText("Score: " + score,0,100);
     }
