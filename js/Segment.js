@@ -19,7 +19,7 @@ class Segment{
         //Set the width of the segment
         if(options.prevSegment == null){
             this.width = 100;
-            this.ClipWidth = this.Width;
+            this.ClipWidth = 100;
         }
         else{
              this.width = this.prevSegment.clipWidth;
@@ -40,9 +40,10 @@ class Segment{
         }else{
             this.XPos = this.ctx.canvas.clientWidth/2 - this.width/2;
         }
-        this.YPos = 50;
+        this.YPos = 400;
         this.ClipX = this.xPos;
         this.ClipY = this.yPos;
+        //console.log(this.xPos);
     }
 
     /* Getters and Setters */
@@ -139,7 +140,7 @@ class Segment{
             this.Speed *= -1;
         }
         if(this.xPos + this.width >= this.ctx.canvas.clientWidth){
-            this.XPos = this.ctx.canvas.clientWidth - this.xPos;
+            this.XPos = 0;
             this.Speed *= -1;
         }
 
@@ -165,10 +166,7 @@ class Segment{
     //to add it to the top
     Update(){
         if(this.moving){
-            if(this.prevSegment != null && this.prevSegment != undefined){
-                this.MoveSegment();
-                console.log(this.XPos);
-            }
+            this.MoveSegment();
         }else{
             if(this.prevSegment != null){
                 this.CheckEdges();
@@ -176,10 +174,10 @@ class Segment{
         }
     }
 
-    //Draws the segment
-    //on the canvas
+    //Draws the segment on the canvas
     Draw(){
-        this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.Height, this.XPos, this.YPos, this.Width, this.Height);
+        //this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.ClipHeight, this.XPos, this.YPos, this.Width, this.Height);
+        this.ctx.drawImage(this.Image, this.XPos, this.YPos, this.Width, this.Height);
     }
 
 }

@@ -40,19 +40,22 @@
 
     window.addEventListener('mousedown',function(e){
 
-        if(gameState == GAME_STATE.GAME){
+        if(gameState == GAME_STATE.MENU){
+            gameState = GAME_STATE.GAME;
+            currentSegment.Draw();
+        }
+        else if(gameState == GAME_STATE.GAME){
             //1) Stop the current segment and check to see if it stopped in a valid place.
             currentSegment.StopSegment();
-
             if(currentSegment.CheckEdges()){
                 
-                score++;                  //Incrememnt the score.
+                score++;                  //Increment the score.
                 moveSpeed += .5;          //Increase the speed each segment travels
                 currentSegment.Clip;      //Set the width and clipping of the segment
 
                 oldSegments.push(currentSegment);   //Add the segment to the list of old.
 
-                tempSegment = currentSegment;
+                var tempSegment = currentSegment;
                 currentSegment = new Segment({
                     prevSegment: tempSegment,
                     ctx: ctx,
@@ -60,11 +63,11 @@
                     speed: moveSpeed,
                     spawnDirection: Math.random()
                 });
-                currentSegment.Draw();  //Draw the new segment.
 
                 //Shift the old segments down
                 for(var i = 0; i < oldSegments.length; i++){
                     oldSegments[i].ShiftDown();
+                    console.log(oldSegments[i].YPos);
                 }
             }
             else{
@@ -85,7 +88,7 @@
         segmentImage1 = new Image();
         segmentImage1.src = "media/segment1.png";
 
-        gameState = GAME_STATE.GAME;    //Set default game state to menu.
+        gameState = GAME_STATE.MENU;    //Set default game state to menu.
 
         //Create the first segment
         currentSegment = new Segment({
@@ -93,7 +96,8 @@
             ctx: ctx,
             image: segmentImage1,
             speed: 10,
-            spawnDirection: 1
+            spawnDirection: 0,
+            moving: true
         });
 
         //Begin the main game loop
@@ -110,16 +114,23 @@
                 DrawMenu();
                 break;
             case GAME_STATE.GAME:
+                //Clear();
                 //Update the current segment
-                currentSegment.Update();
-                //Draw the segments
-                currentSegment.Draw();
-                for(var i = 0; i < oldSegments.length; i++){
-                    oldSegments[i].Draw();
+                ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+                ctx.drawImage(parallaxBack, 0, -25, 1200, 800);
+                ctx.drawImage(parallaxFront, 0, 0,1200, 800);
+                DrawHUD();
+            //Draw the segments
+                if(oldSegments.length != 0){
+                    for(var i = 0; i < oldSegments.length; i++){
+                        oldSegments[i].Draw();
+                    }
                 }
-
+                currentSegment.Update();    //Update the currentSegment
+                currentSegment.Draw();      //Draw the currentSegment
                 break;
             case GAME_STATE.GAMEOVER:
+                DrawGameOver();
                 break;
         }
     }
@@ -128,26 +139,24 @@
 
     function DrawMenu()  //Draw the items that will be displayed as the menu.
     {
-        console.log("draw");
-        ctx.drawImage(parallaxBack, 0, 0, '100%', '100%');
-        ctx.drawImage(parallaxFront, 0, 0, 300, 100);
-        ctx.fillStyle = 'yellow';
-        ctx.font = "30px Arial";
-        ctx.fillText("Testing",canvas.clientWidth/2,canvas.clientHeight/4);
+       // console.log("draw");
+        ctx.drawImage(parallaxBack, 0, -25, 1200, 800);
+        ctx.drawImage(parallaxFront, 0, 0,1200, 800);
+        ctx.fillStyle = 'red';
+        ctx.font = "100pt Arial";
+        ctx.fillText("Tower Builder",0,100);
     }
 
     function DrawGameOver()  //Draw the items we want to display when the game is over.
     {
-
+        ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
     }
 
     function DrawHUD()
     {
-
+        ctx.font = '50pt Arial';
+        ctx.fillText("Score: 999",0,100);
     }
-
-
-
 
 
 
