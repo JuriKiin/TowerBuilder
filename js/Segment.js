@@ -118,7 +118,7 @@ class Segment{
             }
 
             if(this.xPos + this.width > this.prevSegment.clipX + this.prevSegment.clipWidth){
-                var difference = (this.prevSegment.clipX + this.prevSegment.clipWidth - (this.xPos + this.width));
+                var difference = ((this.xPos + this.width) - (this.prevSegment.clipX + this.prevSegment.clipWidth));
                 this.clipWidth -= difference;
             }
             //Otherwise, return true
