@@ -19,7 +19,7 @@
     });
     var gameState;
     var score = 0;
-    var moveSpeed = 1;
+    var moveSpeed = 5;
     var firstSpawn = true;
 
     //Images
@@ -42,6 +42,21 @@
 
         if(gameState == GAME_STATE.MENU){
             gameState = GAME_STATE.GAME;
+            oldSegments.push(currentSegment);   //Add the segment to the list of old.
+
+            var tempSegment = currentSegment;
+            currentSegment = new Segment({
+                prevSegment: tempSegment,
+                ctx: ctx,
+                image: segmentImage1,
+                speed: moveSpeed,
+                spawnDirection:  0//Math.random()
+            });
+            //Shift the old segments down
+            for(var i = 0; i < oldSegments.length; i++){
+                oldSegments[i].ShiftDown();
+                console.log(oldSegments[i].YPos);
+            }
             currentSegment.Draw();
         }
         else if(gameState == GAME_STATE.GAME){
@@ -61,7 +76,7 @@
                     ctx: ctx,
                     image: segmentImage1,
                     speed: moveSpeed,
-                    spawnDirection: Math.random()
+                    spawnDirection:  0//Math.random()
                 });
 
                 //Shift the old segments down
@@ -95,8 +110,8 @@
             prevSegment: null,
             ctx: ctx,
             image: segmentImage1,
-            speed: 10,
-            spawnDirection: 0,
+            speed: 0,
+            spawnDirection: 3,
             moving: true
         });
 
@@ -114,11 +129,7 @@
                 DrawMenu();
                 break;
             case GAME_STATE.GAME:
-                //Clear();
                 //Update the current segment
-                ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-                ctx.drawImage(parallaxBack, 0, -25, 1200, 800);
-                ctx.drawImage(parallaxFront, 0, 0,1200, 800);
                 DrawHUD();
             //Draw the segments
                 if(oldSegments.length != 0){
@@ -137,25 +148,27 @@
     
     /* Drawing functions */
 
-    function DrawMenu()  //Draw the items that will be displayed as the menu.
-    {
+    function DrawMenu(){  //Draw the items that will be displayed as the menu.
        // console.log("draw");
-        ctx.drawImage(parallaxBack, 0, -25, 1200, 800);
-        ctx.drawImage(parallaxFront, 0, 0,1200, 800);
+        ctx.drawImage(parallaxBack, 0, 500, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 550,450, 300);
         ctx.fillStyle = 'red';
-        ctx.font = "100pt Arial";
-        ctx.fillText("Tower Builder",0,100);
+        ctx.font = "45pt Arial";
+        ctx.fillText("Tower Builder",35,100);
     }
 
-    function DrawGameOver()  //Draw the items we want to display when the game is over.
-    {
+    function DrawGameOver(){  //Draw the items we want to display when the game is over.
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+        ctx.font = "45pt Arial";
+        ctx.fillText("Game Over!",35,100);
     }
 
-    function DrawHUD()
-    {
+    function DrawHUD(){
+        ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+        ctx.drawImage(parallaxBack, 0, 500, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 550,450, 300);
         ctx.font = '50pt Arial';
-        ctx.fillText("Score: 999",0,100);
+        ctx.fillText("Score: " + score,0,100);
     }
 
 

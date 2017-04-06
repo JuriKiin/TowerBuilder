@@ -137,11 +137,10 @@ class Segment{
         //Bounce off the two sides
         if(this.xPos <= 0){
             this.XPos = 0;
-            this.Speed *= -1;
+            this.speed *= -1;
         }
-        if(this.xPos + this.width >= this.ctx.canvas.clientWidth){
-            this.XPos = 0;
-            this.Speed *= -1;
+        if(this.xPos + this.width >= this.ctx.canvas.width){
+            this.speed *= -1;
         }
 
         //Update the clip position
