@@ -8,8 +8,6 @@ class Segment{
     constructor(options){   
         options = options || {};
 
-        console.log("new segment!");
-
         //Reference to canvas
         this.ctx = options.ctx;
 
@@ -19,10 +17,10 @@ class Segment{
         //Set the width of the segment
         if(options.prevSegment == null){
             this.width = 100;
-            this.ClipWidth = 100;
+            this.ClipWidth = 0;
         }
         else{
-             this.width = this.prevSegment.clipWidth;
+            this.width = 100;
              this.ClipWidth = this.prevSegment.clipWidth;
         }
         //Sprite image
@@ -43,7 +41,6 @@ class Segment{
         this.YPos = 400;
         this.ClipX = this.xPos;
         this.ClipY = this.yPos;
-        //console.log(this.xPos);
     }
 
     /* Getters and Setters */
@@ -112,8 +109,7 @@ class Segment{
 
             //Clip the edges if there is any hangoff
             if(this.xPos < this.prevSegment.clipX){
-                var difference = this.prevSegment.clipX - this.xPos;
-                this.clipX += difference;
+                var difference = this.prevSegment.clipX - this.xPos;;
                 this.clipWidth -= difference;
             }
 
@@ -166,23 +162,21 @@ class Segment{
     Update(){
         if(this.moving){
             this.MoveSegment();
-        }else{
-            if(this.prevSegment != null){
-                this.CheckEdges();
-            }
         }
     }
 
     //Draws the segment on the canvas
     Draw(){
-        //this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.ClipHeight, this.XPos, this.YPos, this.Width, this.Height);
-        this.ctx.drawImage(this.Image, this.XPos, this.YPos, this.Width, this.Height);
-        console.log("clipX: " + this.ClipX);
-        console.log("X: " + this.XPos);
-        console.log("clipY: " + this.ClipY);
-        console.log("Y: " + this.YPos);
-        console.log(this.ClipWidth);
-        console.log(this.Width);
+        this.ClipWidth = 0;
+        this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.ClipHeight, this.XPos, this.YPos, this.Width, this.Height);
+        //this.ctx.drawImage(this.Image, this.XPos, this.YPos, this.Width, this.Height);
+        //console.log("clipX: " + this.ClipX);
+        //console.log("X: " + this.XPos);
+        //console.log("clipY: " + this.ClipY);
+        //console.log("Y: " + this.YPos);
+        //console.log(this.ClipWidth);
+        //console.log(this.Width);
+        console.warn(this.ClipX + " | " + this.XPos + " | " + this.ClipWidth);
     }
 
 }
