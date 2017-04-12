@@ -1,10 +1,18 @@
+KNOWN BUGS:
+-You have to click twice if you miss the base.
+    -This is caused by needing to click again to have gamestate set to FINISH
+    -Can we add this to the OVEROVER? That would solve the problem.
+
+
 Keyboard Input
 -Capture keyboard events
 -Capture multiple keys simultaneously using Key Daemons
 
 Canvas
 -Draw particle system
+    - Dust exploding off when we place a segment?
 -Draw animated image with sprite sheet
+    - Bird
 -Preload images (see JS slideshow demo)
 
 Audio

@@ -50,12 +50,18 @@
     var currentSegment;
     var oldSegments = [];
 
+    //Key Input variables
+    var keys = {};
+
+    //Audio Input variables
+    var placementAudio;
+
     function PlaceSegment(e){
 
         if(gameState == GAME_STATE.MENU){
             gameState = GAME_STATE.GAME;
             oldSegments.push(currentSegment);   //Add the segment to the list of old.
-
+            notifText = '';
             var tempSegment = currentSegment;
             currentSegment = new Segment({
                 prevSegment: tempSegment,
@@ -79,9 +85,12 @@
         else if(gameState == GAME_STATE.GAME){
             //1) Stop the current segment and check to see if it stopped in a valid place.
             currentSegment.StopSegment();
+
             var tempOutput = currentSegment.CheckEdges();
             if(tempOutput > 0){
                 
+                placementAudio.play();
+
                 score++;                  //Increment the score.
                 moveSpeed += .2;          //Increase the speed each segment travels
                 currentSegment.Clip;      //Set the width and clipping of the segment
@@ -143,6 +152,10 @@
         //Set up click/touch events
         window.addEventListener('pointerdown',PlaceSegment);
         window.addEventListener('touchstart',PlaceSegment);
+        window.addEventListener('keydown',function(e){checkKey(e)});
+
+        //Set audio variables
+        placementAudio = document.querySelector('#effectAudio');
 
         gameState = GAME_STATE.MENU;    //Set default game state to menu.
 
@@ -176,6 +189,18 @@
 
         //Begin the main game loop
         Update();
+    }
+
+
+    function checkKey(key){
+        if(key.keyCode == 32 && gameState == GAME_STATE.GAME)
+        {
+            gameState = GAME_STATE.PAUSE;
+        }
+        else
+        {
+            gameState = GAME_STATE.GAME;
+        }
     }
 
     //Loads images from the media folder

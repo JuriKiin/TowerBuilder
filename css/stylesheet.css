@@ -16,3 +16,6 @@ body{
 header{
     text-align: center;
 }
+audio{
+    display: none;
+}
