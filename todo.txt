@@ -1,0 +1,38 @@
+Keyboard Input
+-Capture keyboard events
+-Capture multiple keys simultaneously using Key Daemons
+
+Canvas
+-Draw particle system
+-Draw animated image with sprite sheet
+-Preload images (see JS slideshow demo)
+
+Audio
+-Play two sounds simultaneously with the <audio> element
+-Use a sound library to play a lot of sounds simultaneously
+
+JS
+-Smooth animations with delta time
+-Canacel animations with window.cancelAnimationFrame()
+-Manipulate the value of this with Function.bind()
+-ASK IF OBJECT LITERAL THINGS ARE IRRELEVANT FOR US BC WE USED CLASSES
+
+Audio Stuff ->
+
+http://soundbible.com/1003-Ta-Da.html
+http://soundbible.com/1830-Sad-Trombone.html
+
+
+Social Media Stuff ->
+
+    <div id="fb-root"></div>
+    <script>(function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=114775978535225";
+    fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));</script>
+
+    <div class="fb-share-button" data-href="http://people.rit.edu/nrw6218/330/project2" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpeople.rit.edu%2Fnrw6218%2F330%2Fproject2&amp;src=sdkpreparse">Share</a></div>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
