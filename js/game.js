@@ -56,22 +56,22 @@
             //Shift the old segments down
             for(var i = 0; i < oldSegments.length; i++){
                 oldSegments[i].ShiftDown();
+                console.log(oldSegments[i].YPos);
             }
             currentSegment.Draw();
         }
         else if(gameState == GAME_STATE.GAME){
             //1) Stop the current segment and check to see if it stopped in a valid place.
-
-
             currentSegment.StopSegment();
             if(currentSegment.CheckEdges()){
                 
                 score++;                  //Increment the score.
                 moveSpeed += .2;          //Increase the speed each segment travels
+                currentSegment.Clip;      //Set the width and clipping of the segment
 
                 //Move the background with the tower
                 if(backgroundShift < 800){
-                    backgroundShift += 10;
+                    backgroundShift += 50;
                 }
 
                 oldSegments.push(currentSegment);   //Add the segment to the list of old.
