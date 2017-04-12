@@ -8,8 +8,6 @@ class Segment{
     constructor(options){   
         options = options || {};
 
-        console.log("new segment!");
-
         //Reference to canvas
         this.ctx = options.ctx;
 
@@ -19,18 +17,21 @@ class Segment{
         //Set the width of the segment
         if(options.prevSegment == null){
             this.width = 100;
-            this.ClipWidth = 100;
+            this.ClipX = 0;
+            this.ClipWidth = 600;
         }
         else{
-             this.width = this.prevSegment.clipWidth;
-             this.ClipWidth = this.prevSegment.clipWidth;
+             this.width = this.prevSegment.width;
+             this.ClipX = this.prevSegment.ClipX - this.prevSegment.difference/2;
+             this.ClipWidth = this.prevSegment.ClipWidth - this.prevSegment.difference/2;
         }
         //Sprite image
         this.Image = options.image;
         this.speed = options.speed;
         this.height = 50;
-        this.clipHeight = this.height;
+        this.clipHeight = 200;
         this.moving = true;
+        this.difference = 0;
 
         //Spawn left/right/center
         if(options.spawnDirection == 0){
@@ -41,9 +42,7 @@ class Segment{
             this.XPos = this.ctx.canvas.clientWidth/2 - this.width/2;
         }
         this.YPos = 400;
-        this.ClipX = this.xPos;
-        this.ClipY = this.yPos;
-        //console.log(this.xPos);
+        this.ClipY = 0;
     }
 
     /* Getters and Setters */
@@ -103,28 +102,41 @@ class Segment{
     CheckEdges(){
         if(this.prevSegment != null){
             //Return false if this segment and the previous segment do not line up
-            if(this.xPos > this.prevSegment.clipX + this.prevSegment.clipWidth){
-                return false;
+            if(this.xPos > this.prevSegment.xPos + this.prevSegment.width){
+                return 0;
             }
-            if(this.prevSegment.clipX > this.xPos + this.width){
-                return false;
+            if(this.prevSegment.xPos > this.xPos + this.width){
+                return 0;
             }
 
             //Clip the edges if there is any hangoff
-            if(this.xPos < this.prevSegment.clipX){
-                var difference = this.prevSegment.clipX - this.xPos;
-                this.clipX += difference;
-                this.clipWidth -= difference;
+            if(this.xPos < this.prevSegment.xPos){
+                this.difference = this.prevSegment.xPos - this.xPos;
+                this.clipX += this.difference * 6;
+                this.xPos += this.difference;
+                this.clipWidth -= this.difference * 6;
+                this.width -= this.difference;
+                if(this.difference < 10){
+                    return 2;
+                }else{
+                    return 1;
+                }
             }
 
-            if(this.xPos + this.width > this.prevSegment.clipX + this.prevSegment.clipWidth){
-                var difference = ((this.xPos + this.width) - (this.prevSegment.clipX + this.prevSegment.clipWidth));
-                this.clipWidth -= difference;
+            if(this.xPos + this.width > this.prevSegment.xPos + this.prevSegment.width){
+                this.difference = ((this.xPos + this.width) - (this.prevSegment.xPos + this.prevSegment.width));
+                this.clipWidth -= this.difference * 6;
+                this.width -= this.difference;
+                if(this.difference < 10){
+                    return 2;
+                }else{
+                    return 1;
+                }
             }
-            //Otherwise, return true
-            return true;
+            //Otherwise, return true if they made a perfect move
+            return 2;
         }else{
-            return true;
+            return 1;
         }
     }
 
@@ -144,14 +156,22 @@ class Segment{
         }
 
         //Update the clip position
-        this.ClipX = this.XPos;
+        this.ClipX = 0;
     }
 
     //Shifts the segment down a level
     //according to its height
     ShiftDown(){
         this.YPos += this.Height;
-        this.ClipY = this.YPos;
+
+        //console.log("clipX: " + this.ClipX);
+        //console.log("X: " + this.XPos);
+        //console.log("clipY: " + this.ClipY);
+        //console.log("Y: " + this.YPos);
+        //console.log("Clip Width: " + this.clipWidth);
+        //console.log("Width: " + this.Width);
+        //console.log("Clip Height: " + this.clipHeight);
+        //console.log("Height: " + this.Height);
     }
 
     //Stops the segment
@@ -175,14 +195,7 @@ class Segment{
 
     //Draws the segment on the canvas
     Draw(){
-        //this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.ClipHeight, this.XPos, this.YPos, this.Width, this.Height);
-        this.ctx.drawImage(this.Image, this.XPos, this.YPos, this.Width, this.Height);
-        console.log("clipX: " + this.ClipX);
-        console.log("X: " + this.XPos);
-        console.log("clipY: " + this.ClipY);
-        console.log("Y: " + this.YPos);
-        console.log(this.ClipWidth);
-        console.log(this.Width);
+        this.ctx.drawImage(this.Image, this.ClipX, this.ClipY, this.ClipWidth, this.clipHeight, this.XPos, this.YPos, this.Width, this.Height);
     }
 
 }

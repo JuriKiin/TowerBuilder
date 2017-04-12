@@ -10,15 +10,27 @@
     //Canvas variables
     var canvas = document.getElementById('canvas');
     var ctx = canvas.getContext("2d");
+    
+    //Time variables
+    var currentTime;
+    var TIME_DIFFERENCE = 100;
+    var fadeFill = "";
+    var fadeAlpha = 0;
+    var notifText;
 
     //Game States
     GAME_STATE = Object.freeze({
         MENU:0,
         GAME:1,
-        GAMEOVER:2
+        GAMEOVER:2,
+        FINISH:3,
+        PAUSE:4
     });
     var gameState;
+    var prevState;
     var score = 0;
+    var highestScore;
+    var newBest = false;
     var moveSpeed = 5;
     var firstSpawn = true;
 
@@ -38,8 +50,7 @@
     var currentSegment;
     var oldSegments = [];
 
-
-    window.addEventListener('mousedown',function(e){
+    function PlaceSegment(e){
 
         if(gameState == GAME_STATE.MENU){
             gameState = GAME_STATE.GAME;
@@ -56,14 +67,20 @@
             //Shift the old segments down
             for(var i = 0; i < oldSegments.length; i++){
                 oldSegments[i].ShiftDown();
-                console.log(oldSegments[i].YPos);
             }
             currentSegment.Draw();
+        }
+        else if(gameState == GAME_STATE.FINISH){
+            //Save the highscore
+            SetHighScore();
+            highestScore = GetCookie("highscore=");
+            gameState = GAME_STATE.GAMEOVER;
         }
         else if(gameState == GAME_STATE.GAME){
             //1) Stop the current segment and check to see if it stopped in a valid place.
             currentSegment.StopSegment();
-            if(currentSegment.CheckEdges()){
+            var tempOutput = currentSegment.CheckEdges();
+            if(tempOutput > 0){
                 
                 score++;                  //Increment the score.
                 moveSpeed += .2;          //Increase the speed each segment travels
@@ -94,14 +111,27 @@
                 //Shift the old segments down
                 for(var i = 0; i < oldSegments.length; i++){
                     oldSegments[i].ShiftDown();
-                    console.log(oldSegments[i].YPos);
+                }
+
+                //If the user had a perfect move, display it
+                if(tempOutput == 2){
+                    fadeAlpha = 0;
+                    if(!newBest && score > highestScore){
+                        notifText = "HIGH SCORE";
+                        newBest = true;
+                    }else{
+                        notifText = "PERFECT";
+                    }
+                    FadeIn();
+                }else{
+                    FadeOut();
                 }
             }
             else{
-                gameState = GAME_STATE.GAMEOVER;
+                gameState = GAME_STATE.FINISH;
             }
         }
-    });
+    }
 
 
     //Initialize function
@@ -109,6 +139,10 @@
     {
         //Load in the image files
         LoadImages();
+
+        //Set up click/touch events
+        window.addEventListener('pointerdown',PlaceSegment);
+        window.addEventListener('touchstart',PlaceSegment);
 
         gameState = GAME_STATE.MENU;    //Set default game state to menu.
 
@@ -121,6 +155,24 @@
             spawnDirection: 2,
             moving: true
         });
+
+        //Handle pausing and unpausing
+        window.onblur = function(){
+            prevState = gameState;
+            fadeAlpha = 0;
+            FadeIn();
+            gameState = GAME_STATE.PAUSE;
+        }
+
+        window.onfocus = function(){
+            gameState = prevState;
+            fadeAlpha = 0;
+            fadeFill = "rgba(256,256,256," + fadeAlpha + ")"
+        }
+
+        //Load high score
+        highestScore = GetCookie("highscore=");
+        console.log(highestScore);
 
         //Begin the main game loop
         Update();
@@ -163,40 +215,136 @@
                 currentSegment.Update();    //Update the currentSegment
                 currentSegment.Draw();      //Draw the currentSegment
                 break;
+            case GAME_STATE.FINISH:
+                //Update the current segment
+                DrawHUD();
+                //Draw the segments
+                if(oldSegments.length != 0){
+                    for(var i = 0; i < oldSegments.length; i++){
+                        oldSegments[i].Draw();
+                    }
+                }
+                break;
             case GAME_STATE.GAMEOVER:
                 DrawGameOver();
+                break;
+            case GAME_STATE.PAUSE:
+                DrawPause();
                 break;
         }
     }
     
     /* Drawing functions */
 
-    function DrawMenu(){  //Draw the items that will be displayed as the menu.
-       // console.log("draw");
+    //Draws the items for the splash screen
+    function DrawMenu(){
+        ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
         ctx.drawImage(parallaxBack, 0, 500, 450, 300);
         ctx.drawImage(parallaxFront, 0, 550,450, 300);
-        ctx.fillStyle = 'red';
-        ctx.font = "45pt Arial";
+        //Title text
+        ctx.fillStyle = '#581D99';
+        ctx.font = "70px Josefin Sans";
         ctx.fillText("Tower Builder",35,100);
+        //'tap to continue' text
+        ctx.font = "40px Dosis";
+        ctx.fillText("Tap to Start",135,500);
     }
 
-    function DrawGameOver(){  //Draw the items we want to display when the game is over.
+    //Draws the interface for the pause menu
+    function DrawPause(){
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-        ctx.font = "45pt Arial";
-        ctx.fillText("Game Over!",35,100);
+        ctx.font = "45pt Josefin Sans";
+        ctx.fillStyle = fadeFill;
+        ctx.fillText("Paused",135,300);
     }
 
+    //Draws the interface for the game over screen
+    function DrawGameOver(){  
+        ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
+        ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
+        ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
+        //GAMEOVER
+        ctx.fillStyle = '#581D99';
+        ctx.font = "45pt Josefin Sans";
+        ctx.fillText("Game Over",80,100);
+        //Score
+        ctx.font = '40pt Josefin Sans';
+        ctx.fillStyle = 'white';
+        ctx.fillText("Score: " + score,135,300);
+        ctx.fillText("High Score: " + highestScore,75 - 5 * highestScore%10,350);
+    }
+
+    //Draw the background and HUD of the main screen
     function DrawHUD(){
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
         ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
         ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
-        ctx.font = '50pt Arial';
-        ctx.fillText("Score: " + score,0,100);
+        //Draw score
+        ctx.font = '50pt Josefin Sans';
+        ctx.fillStyle = '#581D99';
+        ctx.fillText(score,205,100);
+        //Draw perfect move notification
+        ctx.font = "40pt Dosis";
+        ctx.fillStyle = fadeFill;
+        ctx.fillText(notifText,135,300);
     }
 
+    //Fades in text
+    function FadeIn(){
+        if(fadeAlpha < 1){
+            fadeAlpha += 0.1;
+        }
+        fadeFill = "rgba(256,256,256," + fadeAlpha + ")"
 
+        //Loop while the alpha is not 0 or 1
+        if(fadeAlpha <= 1){
+            requestAnimationFrame(FadeIn);
+        }else{
+            setTimeout(FadeOut,1500);
+        }
+    }
 
+    function FadeOut(){
+        if(fadeAlpha > 0){
+            fadeAlpha -= 0.1;
+        }
+        fadeFill = "rgba(256,256,256," + fadeAlpha + ")"
 
+        //Loop while the alpha is not 0 or 1
+        if(fadeAlpha >= 0){
+            requestAnimationFrame(FadeOut);
+        }
+    }
+
+    //Set up high scores
+    var SetHighScore = function() {
+        var highScore = GetCookie("highscore=");
+        //Compare the current highscore to your score
+        if(highScore == "" || score > parseFloat(highScore)){
+            document.cookie = "highscore=" + score + "; path=/";
+        }
+        else{
+            document.cookie = "highscore=" + highScore + "; path=/";
+        }
+    }
+
+    //Gets the value of specified name in the cookie
+    function GetCookie(cookieName){
+        //Split the cookie into an array of values
+        var cook = document.cookie.split(';');
+        //Loop through the new array
+        for(i = 0; i < cook.length; i++){
+            //Remove spacing
+            while(cook[i].charAt(0) == ' '){
+                cook[i] = cook[i].substring(1,cook[i].length);
+            }
+            if(cook[i].indexOf(cookieName) == 0){
+                return cook[i].split("=")[1];
+            }
+        }
+        return "";
+    }
 
 }());

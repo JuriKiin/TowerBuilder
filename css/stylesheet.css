@@ -1,3 +1,8 @@
+/* Fonts */
+body{
+    font-family: 'Dosis', sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
+}
 
 /*Canvas Style */
 #canvas{
