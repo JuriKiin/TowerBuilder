@@ -58,7 +58,11 @@
 
     function PlaceSegment(e){
 
-        if(gameState == GAME_STATE.MENU){
+        if(gameState == GAME_STATE.GAMEOVER){
+            gameState == GAME_STATE.MENU;
+        }
+
+        else if(gameState == GAME_STATE.MENU){
             gameState = GAME_STATE.GAME;
             oldSegments.push(currentSegment);   //Add the segment to the list of old.
             notifText = '';
@@ -193,13 +197,14 @@
 
 
     function checkKey(key){
-        if(key.keyCode == 32 && gameState == GAME_STATE.GAME)
+        if(key.keyCode == 32 && gameState != GAME_STATE.PAUSE)
         {
+            prevState = gameState;
             gameState = GAME_STATE.PAUSE;
         }
         else
         {
-            gameState = GAME_STATE.GAME;
+            gameState = prevState;
         }
     }
 
@@ -272,7 +277,7 @@
         ctx.fillText("Tower Builder",35,100);
         //'tap to continue' text
         ctx.font = "40px Dosis";
-        ctx.fillText("Tap to Start",135,500);
+        ctx.fillText("Tap to Play",145,500);
     }
 
     //Draws the interface for the pause menu
