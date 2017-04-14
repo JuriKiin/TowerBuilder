@@ -38,6 +38,14 @@
     var parallaxFront;
     var parallaxBack;
     var background;
+    var pauseImage1;
+    var pauseImage2;
+    var powerImage1;
+    var powerImage2;
+
+    //Buttons
+    var powerButton;
+    var pauseButton;
 
     //Shift-variable for background
     var backgroundShift;
