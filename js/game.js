@@ -43,7 +43,7 @@
     var powerImage1;
     var powerImage2;
     var clouds;
-
+    var bird;
     //Buttons
     var powerButton;
     var pauseButton;
@@ -69,6 +69,18 @@
     var bgAudio;
     var loseAudio;
     var highscoreAudio;
+
+    //Bird Animation variables
+    var birdClipX;
+    var birdClipY;
+    var birdClipWidth;
+    var birdClipHeight;
+    var birdXPos = 0;
+    var birdYPos;
+    var birdWidth;
+    var birdHeight;
+    var currentFrame = 0;
+    var animSpeed = 10;
 
     function PlaceSegment(e){
 
@@ -249,6 +261,8 @@
         segmentImage1.src = "media/segment1.png";
         clouds = new Image();
         clouds.src = "media/clouds.png";
+        bird = new Image();
+        bird.src = "media/bird.png";
 
         //Initialize the backgroundShift value
         backgroundShift = 0;
@@ -260,7 +274,7 @@
 
         requestAnimationFrame(Update);
 
-        cloudPosition += .25;
+        cloudPosition -= .25;
 
         if(cloudPosition > canvas.clientWidth + clouds.clientWidth)
         {
@@ -273,6 +287,20 @@
                 break;
             case GAME_STATE.GAME:
                 //Update the current segment
+                animSpeed++;
+                if(animSpeed % 7 == 0)
+                {
+                    currentFrame++;
+                    if(currentFrame > 13)
+                    {
+                        currentFrame = 0;
+                    }
+                }
+                birdXPos += 2;
+                if(birdXPos > canvas.clientWidth*2)
+                {
+                    birdXPos = 0-200;
+                }
                 DrawHUD();
             //Draw the segments
                 if(oldSegments.length != 0){
@@ -349,7 +377,7 @@
         ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
         ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
-        ctx.drawImage(clouds,cloudPosition,backgroundShift * .02,300,225);
+        ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, 150, 75,75);
         //Draw score
         ctx.font = '50pt Josefin Sans';
         ctx.fillStyle = '#581D99';
