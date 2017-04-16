@@ -1,28 +1,24 @@
 Keyboard Input
 -Capture keyboard events
--Capture multiple keys simultaneously using Key Daemons
+//We don't have to do this  -Capture multiple keys simultaneously using Key Daemons
 
 Canvas
 -Draw particle system
     - Confetti upon highscore.
 -Draw animated image with sprite sheet
     - Bird
--Preload images (see JS slideshow demo)
-
-Audio
--Play two sounds simultaneously with the <audio> element
--Use a sound library to play a lot of sounds simultaneously
 
 JS
 -Smooth animations with delta time
 -Canacel animations with window.cancelAnimationFrame()
 -Manipulate the value of this with Function.bind()
--ASK IF OBJECT LITERAL THINGS ARE IRRELEVANT FOR US BC WE USED CLASSES
 
 Audio Stuff ->
 
 http://soundbible.com/1003-Ta-Da.html
 http://soundbible.com/1830-Sad-Trombone.html
+http://soundbible.com/2108-Shoot-Arrow.html //Sound bible
+http://www.bensound.com/royalty-free-music/cinematic    Need to give credit.
 
 
 Social Media Stuff ->

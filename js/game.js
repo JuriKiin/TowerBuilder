@@ -42,6 +42,7 @@
     var pauseImage2;
     var powerImage1;
     var powerImage2;
+    var clouds;
 
     //Buttons
     var powerButton;
@@ -49,6 +50,7 @@
 
     //Shift-variable for background
     var backgroundShift;
+    var cloudPosition;
 
     //Segment variables
     var segmentImage1;
@@ -62,7 +64,11 @@
     var keys = {};
 
     //Audio Input variables
+    var audioSources = [];
     var placementAudio;
+    var bgAudio;
+    var loseAudio;
+    var highscoreAudio;
 
     function PlaceSegment(e){
 
@@ -149,6 +155,8 @@
                 }
             }
             else{
+
+                loseAudio.play();
                 gameState = GAME_STATE.FINISH;
             }
         }
@@ -168,6 +176,14 @@
 
         //Set audio variables
         placementAudio = document.querySelector('#effectAudio');
+        audioSources.push(placementAudio);
+        bgAudio = document.querySelector('#bgAudio');
+        audioSources.push(bgAudio);
+        loseAudio = document.querySelector('#loseAudio');
+        audioSources.push(loseAudio);
+        highscoreAudio = document.querySelector('#highscoreAudio');
+        audioSources.push(highscoreAudio);
+        //bgAudio.play();
 
         gameState = GAME_STATE.MENU;    //Set default game state to menu.
 
@@ -187,12 +203,16 @@
             fadeAlpha = 0;
             FadeIn();
             gameState = GAME_STATE.PAUSE;
+            for(i = 0;i<audioSources.length;i++){   //Loop through and pause all of our audio.
+                audioSources[i].pause();
+            }
         }
 
         window.onfocus = function(){
             gameState = prevState;
             fadeAlpha = 0;
-            fadeFill = "rgba(256,256,256," + fadeAlpha + ")"
+            fadeFill = "rgba(256,256,256," + fadeAlpha + ")";
+            //bgAudio.play();
         }
 
         //Load high score
@@ -227,15 +247,25 @@
         parallaxFront.src = "media/skyline1.png";
         segmentImage1 = new Image();
         segmentImage1.src = "media/segment1.png";
+        clouds = new Image();
+        clouds.src = "media/clouds.png";
 
         //Initialize the backgroundShift value
         backgroundShift = 0;
+        cloudPosition = 0;
     }
 
     //Runs the main game loop
     function Update(){
 
         requestAnimationFrame(Update);
+
+        cloudPosition += .25;
+
+        if(cloudPosition > canvas.clientWidth + clouds.clientWidth)
+        {
+            cloudPosition = -300;
+        }
 
         switch(gameState){
             case GAME_STATE.MENU:
@@ -319,6 +349,7 @@
         ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
         ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
+        ctx.drawImage(clouds,cloudPosition,backgroundShift * .02,300,225);
         //Draw score
         ctx.font = '50pt Josefin Sans';
         ctx.fillStyle = '#581D99';
@@ -362,6 +393,7 @@
         //Compare the current highscore to your score
         if(highScore == "" || score > parseFloat(highScore)){
             document.cookie = "highscore=" + score + "; path=/";
+            highscoreAudio.play();
         }
         else{
             document.cookie = "highscore=" + highScore + "; path=/";
