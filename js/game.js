@@ -218,7 +218,7 @@
         audioSources.push(loseAudio);
         highscoreAudio = document.querySelector('#highscoreAudio');
         audioSources.push(highscoreAudio);
-        //bgAudio.play();
+        bgAudio.play();
 
         gameState = GAME_STATE.MENU;    //Set default game state to menu.
 
@@ -247,7 +247,7 @@
             gameState = prevState;
             fadeAlpha = 0;
             fadeFill = "rgba(256,256,256," + fadeAlpha + ")";
-            //bgAudio.play();
+            bgAudio.play();
             animID = requestAnimationFrame(Update.bind(this));
         }
 
