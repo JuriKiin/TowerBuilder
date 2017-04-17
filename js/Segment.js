@@ -19,15 +19,16 @@ class Segment{
             this.width = 100;
             this.ClipX = 0;
             this.ClipWidth = 600;
+            this.speed = 0;
         }
         else{
              this.width = this.prevSegment.width;
              this.ClipX = this.prevSegment.ClipX - this.prevSegment.difference/2;
              this.ClipWidth = this.prevSegment.ClipWidth - this.prevSegment.difference/2;
+             this.speed = options.speed;
         }
         //Sprite image
         this.Image = options.image;
-        this.speed = options.speed;
         this.height = 50;
         this.clipHeight = 200;
         this.moving = true;

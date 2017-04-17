@@ -51,6 +51,9 @@
     //Shift-variable for background
     var backgroundShift;
     var cloudPosition;
+    var backgroundStart = 800;
+    var p1Start = 500;
+    var p2Start = 550;
 
     //Segment variables
     var segmentImage1;
@@ -85,11 +88,23 @@
     function PlaceSegment(e){
 
         if(gameState == GAME_STATE.GAMEOVER){
+            oldSegments = [];
+            currentSegment = new Segment({
+                prevSegment: null,
+                ctx: ctx,
+                image: segmentImage1,
+                speed: 0,
+                spawnDirection: 2,
+                moving: true
+            });
+            score = 0;
+            moveSpeed = 5;
             gameState = GAME_STATE.MENU;
         }
 
         else if(gameState == GAME_STATE.MENU){
             gameState = GAME_STATE.GAME;
+            backgroundShift = 0;
             oldSegments.push(currentSegment);   //Add the segment to the list of old.
             notifText = '';
             var tempSegment = currentSegment;
@@ -167,6 +182,7 @@
                 }
             }
             else{
+
                 loseAudio.play();
                 gameState = GAME_STATE.FINISH;
             }
@@ -228,7 +244,6 @@
 
         //Load high score
         highestScore = GetCookie("highscore=");
-        console.log(highestScore);
 
         //Begin the main game loop
         Update();
@@ -271,7 +286,7 @@
     //Runs the main game loop
     function Update(){
 
-        requestAnimationFrame(Update);
+        requestAnimationFrame(Update.bind(this));
 
         cloudPosition -= .25;
 
@@ -333,9 +348,10 @@
 
     //Draws the items for the splash screen
     function DrawMenu(){
-        ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
-        ctx.drawImage(parallaxBack, 0, 500, 450, 300);
-        ctx.drawImage(parallaxFront, 0, 550,450, 300);
+        ctx.drawImage(background, 0, -backgroundStart + backgroundShift, 450, 1600);
+        ctx.drawImage(clouds, cloudPosition, 150,450, 300);
+        ctx.drawImage(parallaxBack, 0, p1Start, 450, 300);
+        ctx.drawImage(parallaxFront, 0, p2Start,450, 300);
         //Title text
         ctx.fillStyle = '#581D99';
         ctx.font = "70px Josefin Sans";
@@ -356,7 +372,8 @@
     //Draws the interface for the game over screen
     function DrawGameOver(){  
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-        ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
+        ctx.drawImage(background, 0, -backgroundStart + backgroundShift, 450, 1600);
+        ctx.drawImage(clouds, cloudPosition, 150,450, 300);
         ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
         //GAMEOVER
@@ -374,8 +391,10 @@
     function DrawHUD(){
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
         ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
-        ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
-        ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
+        ctx.drawImage(clouds, cloudPosition, 150,450, 300);
+        ctx.drawImage(parallaxBack, 0, p1Start + backgroundShift*1.1, 450, 300);
+        ctx.drawImage(parallaxFront, 0, p2Start + backgroundShift*1.2,450, 300);
+        
         ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, 150, 75,75);
         //Draw score
         ctx.font = '50pt Josefin Sans';
