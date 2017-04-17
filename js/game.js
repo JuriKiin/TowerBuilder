@@ -85,7 +85,7 @@
     function PlaceSegment(e){
 
         if(gameState == GAME_STATE.GAMEOVER){
-            gameState == GAME_STATE.MENU;
+            gameState = GAME_STATE.MENU;
         }
 
         else if(gameState == GAME_STATE.MENU){
@@ -167,7 +167,6 @@
                 }
             }
             else{
-
                 loseAudio.play();
                 gameState = GAME_STATE.FINISH;
             }

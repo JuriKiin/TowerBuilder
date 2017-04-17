@@ -45,6 +45,9 @@ body{
     text-align: center;
     height:800px;
 }
+#About h1{
+    font-size: 60px;
+}
 #About p{
     margin: 0 5%;
     text-align: left;
