@@ -82,9 +82,16 @@
     var birdYPos;
     var birdWidth;
     var birdHeight;
+    var birdSpeed = .25;
     var currentFrame = 0;
     var animSpeed = 10;
     var animID;
+
+    //DeltaTime vars
+    var deltaTime;
+    var lastFrame = 0;
+    var thisFrame;
+    var cloudSpeed = .05;
 
     function PlaceSegment(e){
 
@@ -291,11 +298,17 @@
 
         animID = requestAnimationFrame(Update.bind(this));
 
-        cloudPosition -= .25;
+        //Handle deltaTime calculations here.
+        thisFrame = Date.now();
+        deltaTime = thisFrame - lastFrame;
+        lastFrame = thisFrame;
+        //console.log(deltaTime);   //log deltaTime.
 
-        if(cloudPosition > canvas.clientWidth + clouds.clientWidth)
+        cloudPosition -= deltaTime * cloudSpeed;
+
+        if(cloudPosition < (-clouds.clientWidth - 500))
         {
-            cloudPosition = -300;
+            cloudPosition = canvas.clientWidth + clouds.clientWidth + 50;
         }
 
         switch(gameState){
@@ -313,7 +326,7 @@
                         currentFrame = 0;
                     }
                 }
-                birdXPos += 2;
+                birdXPos += (deltaTime * birdSpeed);
                 if(birdXPos > canvas.clientWidth*2)
                 {
                     birdXPos = 0-200;
@@ -395,10 +408,9 @@
     function DrawHUD(){
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
         ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
-        ctx.drawImage(clouds, cloudPosition, 150,450, 300);
         ctx.drawImage(parallaxBack, 0, p1Start + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, p2Start + backgroundShift*1.2,450, 300);
-        
+        ctx.drawImage(clouds, cloudPosition, 150,450, 300);
         ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, 150, 75,75);
         //Draw score
         ctx.font = '50pt Josefin Sans';
@@ -415,7 +427,8 @@
         if(fadeAlpha < 1){
             fadeAlpha += 0.1;
         }
-        fadeFill = "rgba(256,256,256," + fadeAlpha + ")"
+        //fadeFill = "rgba(256,256,256," + fadeAlpha + ")";
+        fadeFill = 'rgba(229,124,129,'+fadeAlpha+')';
 
         //Loop while the alpha is not 0 or 1
         if(fadeAlpha <= 1){
@@ -429,7 +442,7 @@
         if(fadeAlpha > 0){
             fadeAlpha -= 0.1;
         }
-        fadeFill = "rgba(256,256,256," + fadeAlpha + ")"
+        fadeFill = 'rgba(229,124,129,'+fadeAlpha+')';
 
         //Loop while the alpha is not 0 or 1
         if(fadeAlpha >= 0){

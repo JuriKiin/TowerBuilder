@@ -1,21 +1,21 @@
 Canvas
 -Draw particle system
     - Confetti upon highscore.
--Draw animated image with sprite sheet
-    - Bird
 
 JS
 -Smooth animations with delta time
 
-Audio Stuff ->
 
+ASK STEVE IF WE NEED TO IMPLEMENT THIS OR HAVE WE DONE IT:
+- Sound Library. I have an array of audio sources.
+
+
+sources:
 http://soundbible.com/1003-Ta-Da.html
 http://soundbible.com/1830-Sad-Trombone.html
 http://soundbible.com/2108-Shoot-Arrow.html //Sound bible
 http://www.bensound.com/royalty-free-music/cinematic    Need to give credit.
-
-sources:
-
+https://www.pinterest.com/eueffa/animationsprite/
 
 
 Social Media Stuff ->
