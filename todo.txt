@@ -1,6 +1,4 @@
 LEFT TO DO:
--Draw particle system
-    - Confetti upon highscore.
 -Get network score? Nik?
 -Powerups
 

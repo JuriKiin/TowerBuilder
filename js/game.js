@@ -17,6 +17,7 @@
     var fadeFill = "";
     var fadeAlpha = 0;
     var notifText;
+    var touched = false;
 
     //Game States
     GAME_STATE = Object.freeze({
@@ -44,6 +45,9 @@
     var powerImage2;
     var clouds;
     var bird;
+
+    //Emitter
+    var confetti;
 
     //Buttons
     var powerButton;
@@ -189,6 +193,7 @@
                 }else{
                     FadeOut();
                 }
+                touched = true;
             }
             else{
                 //Change this with a different sound
@@ -209,6 +214,15 @@
         window.addEventListener('pointerdown',PlaceSegment);
         window.addEventListener('touchstart',PlaceSegment);
         window.addEventListener('keydown',function(e){checkKey(e)});
+
+        //Initialize the particle system
+        confetti = new Emitter({
+            red: 150,
+            green: 0,
+            blue: 0
+        });
+        confetti.CreateParticles({x:50,y:50});
+        confetti.CreateParticles({x:50,y:50});
 
         //Set audio variables
         placementAudio = document.querySelector('#effectAudio');
@@ -389,15 +403,42 @@
 
     //Draws the interface for the game over screen
     function DrawGameOver(){  
+        //Background images
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
         ctx.drawImage(background, 0, -backgroundStart, 450, 1600);
         ctx.drawImage(clouds, cloudPosition, 150,450, 300);
         ctx.drawImage(parallaxBack, 0, 500, 450, 300);
         ctx.drawImage(parallaxFront, 0, 500,450, 300);
         //GAMEOVER
-        ctx.fillStyle = '#581D99';
-        ctx.font = "45pt Josefin Sans";
-        ctx.fillText("Game Over!",80,100);
+        if(score > highestScore){
+            //Confetti Effect
+            confetti.UpdateAndDraw(ctx,{x:100,y:-50});
+            confetti.UpdateAndDraw(ctx,{x:200,y:-50});
+            confetti.UpdateAndDraw(ctx,{x:300,y:-50});
+            //Change confetti colors
+            if(confetti.red < 255){
+                confetti.red += 10;
+            }else{
+                confetti.red = 0;
+            }
+            if(confetti.green < 255){
+                confetti.green += 10;
+            }else{
+                confetti.green = 0;
+            }
+            if(confetti.blue < 255){
+                confetti.blue += 10;
+            }else{
+                confetti.blue = 0;
+            }
+            ctx.fillStyle = '#581D99';
+            ctx.font = "45pt Josefin Sans";
+            ctx.fillText("Good job!",95,100);
+        }else{
+            ctx.fillStyle = '#581D99';
+            ctx.font = "45pt Josefin Sans";
+            ctx.fillText("Game Over",80,100);
+        }
         //Score
         ctx.font = '40pt Josefin Sans';
         ctx.fillStyle = '#FA4B55';
@@ -405,7 +446,7 @@
         ctx.fillText("High Score: " + highestScore,75 - 5 * highestScore%10,350);
         ctx.font = "40px Dosis";
         ctx.fillStyle = '#581D99';
-        ctx.fillText("Tap to return to the menu",30,500);
+        ctx.fillText("Tap to Return to the Menu",30,500);
     }
 
     //Draw the background and HUD of the main screen
@@ -424,6 +465,10 @@
         ctx.font = "40pt Dosis";
         ctx.fillStyle = fadeFill;
         ctx.fillText(notifText,135,300);
+        if(!touched){
+            ctx.font = "20pt Dosis";
+            ctx.fillText("Tap Anywhere to Stack the Block",60,300);
+        }
     }
 
     //Fades in text
