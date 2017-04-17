@@ -7,12 +7,14 @@
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Dosis|Josefin+Sans:600" rel="stylesheet">
+<!-- Facebook Meta Properties -->
+<meta property="og:url"           content="http://people.rit.edu/nrw6218/330/TowerBuilder/index.html" />
+<meta property="og:type"          content="website" />
+<meta property="og:title"         content="Tower Builder" />
+<meta property="og:description"   content="Take it to the skies in this minimalistic skyscraper building game." />
+<meta property="og:image"         content="http://people.rit.edu/nrw6218/330/TowerBuilder/media/bird.png" />
 </head>
 <body>
-    <!--<header>
-        <h1>Tower Builder</h1>
-    </header>
-    -->
     <canvas id="canvas" width="450px" height="800px"></canvas>
 
     <div id="score">
@@ -31,6 +33,17 @@
             This is what our game is about. It's called tower builder and it sucks. It was
             made by Juri Kiin and Nikolas Whiteside.
         </p>
+        <!--<div id="fb-root"></div>
+        <script>(function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=114775978535225";
+        fjs.parentNode.insertBefore(js, fjs);
+        }(document, 'script', 'facebook-jssdk'));</script>
+
+        <div class="fb-share-button" data-href="http://people.rit.edu/nrw6218/330/project2" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpeople.rit.edu%2Fnrw6218%2F330%2Fproject2&amp;src=sdkpreparse">Share</a></div>
+        <a href="https://twitter.com/share" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>-->
     </div>
 
     <audio id='effectAudio' src='media/placement.mp3'></audio>

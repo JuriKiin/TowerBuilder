@@ -44,6 +44,7 @@
     var powerImage2;
     var clouds;
     var bird;
+
     //Buttons
     var powerButton;
     var pauseButton;
@@ -190,7 +191,7 @@
                 }
             }
             else{
-
+                //Change this with a different sound
                 loseAudio.play();
                 gameState = GAME_STATE.FINISH;
             }
@@ -463,6 +464,7 @@
         }
         else{
             document.cookie = "highscore=" + highScore + "; path=/";
+            loseAudio.play();
         }
     }
 
