@@ -389,19 +389,22 @@
     //Draws the interface for the game over screen
     function DrawGameOver(){  
         ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-        ctx.drawImage(background, 0, -backgroundStart + backgroundShift, 450, 1600);
+        ctx.drawImage(background, 0, -backgroundStart, 450, 1600);
         ctx.drawImage(clouds, cloudPosition, 150,450, 300);
-        ctx.drawImage(parallaxBack, 0, 200 + backgroundShift*1.1, 450, 300);
-        ctx.drawImage(parallaxFront, 0, 250 + backgroundShift*1.2,450, 300);
+        ctx.drawImage(parallaxBack, 0, 500, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 500,450, 300);
         //GAMEOVER
         ctx.fillStyle = '#581D99';
         ctx.font = "45pt Josefin Sans";
-        ctx.fillText("Game Over",80,100);
+        ctx.fillText("Game Over!",80,100);
         //Score
         ctx.font = '40pt Josefin Sans';
-        ctx.fillStyle = 'white';
+        ctx.fillStyle = '#FA4B55';
         ctx.fillText("Score: " + score,135,300);
         ctx.fillText("High Score: " + highestScore,75 - 5 * highestScore%10,350);
+        ctx.font = "40px Dosis";
+        ctx.fillStyle = '#581D99';
+        ctx.fillText("Tap to return to the menu",30,500);
     }
 
     //Draw the background and HUD of the main screen
@@ -428,7 +431,7 @@
             fadeAlpha += 0.1;
         }
         //fadeFill = "rgba(256,256,256," + fadeAlpha + ")";
-        fadeFill = 'rgba(229,124,129,'+fadeAlpha+')';
+        fadeFill = 'rgba(250,75,85,'+fadeAlpha+')';
 
         //Loop while the alpha is not 0 or 1
         if(fadeAlpha <= 1){
@@ -442,7 +445,7 @@
         if(fadeAlpha > 0){
             fadeAlpha -= 0.1;
         }
-        fadeFill = 'rgba(229,124,129,'+fadeAlpha+')';
+        fadeFill = 'rgba(250,75,85,'+fadeAlpha+')';
 
         //Loop while the alpha is not 0 or 1
         if(fadeAlpha >= 0){
