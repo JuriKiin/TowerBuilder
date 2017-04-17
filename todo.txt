@@ -6,8 +6,6 @@ Canvas
 
 JS
 -Smooth animations with delta time
--Canacel animations with window.cancelAnimationFrame()
--Manipulate the value of this with Function.bind()
 
 Audio Stuff ->
 

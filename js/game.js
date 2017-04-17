@@ -84,6 +84,7 @@
     var birdHeight;
     var currentFrame = 0;
     var animSpeed = 10;
+    var animID;
 
     function PlaceSegment(e){
 
@@ -240,6 +241,7 @@
             fadeAlpha = 0;
             fadeFill = "rgba(256,256,256," + fadeAlpha + ")";
             //bgAudio.play();
+            animID = requestAnimationFrame(Update.bind(this));
         }
 
         //Load high score
@@ -259,6 +261,7 @@
         else
         {
             gameState = prevState;
+            animID = requestAnimationFrame(Update.bind(this));
         }
     }
 
@@ -286,7 +289,7 @@
     //Runs the main game loop
     function Update(){
 
-        requestAnimationFrame(Update.bind(this));
+        animID = requestAnimationFrame(Update.bind(this));
 
         cloudPosition -= .25;
 
@@ -339,6 +342,7 @@
                 DrawGameOver();
                 break;
             case GAME_STATE.PAUSE:
+                cancelAnimationFrame(animID);
                 DrawPause();
                 break;
         }
