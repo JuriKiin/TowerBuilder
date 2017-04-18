@@ -41,8 +41,8 @@
     var background;
     var pauseImage1;
     var pauseImage2;
-    var powerImage1;
-    var powerImage2;
+    var powerImage;
+    var p
     var clouds;
     var bird;
 
@@ -98,18 +98,18 @@
     var thisFrame;
     var cloudSpeed = .05;
 
+    //Powerups
+    var powerupCount = 0;
+    var powerUp = false;
+    var powerImages = [];
+
     function PlaceSegment(e){
 
         if(gameState == GAME_STATE.GAMEOVER){
+            //Save the highscore
+            SetHighScore();
+            highestScore = GetCookie("highscore=");
             oldSegments = [];
-            currentSegment = new Segment({
-                prevSegment: null,
-                ctx: ctx,
-                image: segmentImage1,
-                speed: 0,
-                spawnDirection: 2,
-                moving: true
-            });
             score = 0;
             moveSpeed = 5;
             gameState = GAME_STATE.MENU;
@@ -134,16 +134,18 @@
             }
             currentSegment.Draw();
         }
-        else if(gameState == GAME_STATE.FINISH){
-            //Save the highscore
-            SetHighScore();
-            highestScore = GetCookie("highscore=");
-            gameState = GAME_STATE.GAMEOVER;
-        }
         else if(gameState == GAME_STATE.GAME){
             //1) Stop the current segment and check to see if it stopped in a valid place.
-            currentSegment.StopSegment();
 
+            if(powerupCount > 2){
+                //Engage powerup.
+                powerUp = true;
+                powerupCount = -1;
+                //Make the width of the next segment full again.
+            }
+
+
+            currentSegment.StopSegment();
             var tempOutput = currentSegment.CheckEdges();
             if(tempOutput > 0){
                 
@@ -166,14 +168,29 @@
                     tempDir = 1;
                 }
 
-                var tempSegment = currentSegment;
-                currentSegment = new Segment({
+                if(!powerUp){
+                    var tempSegment = currentSegment;
+
+                    currentSegment = new Segment({
                     prevSegment: tempSegment,
                     ctx: ctx,
                     image: segmentImage1,
                     speed: moveSpeed,
                     spawnDirection: tempDir
-                });
+                    });
+                }
+                else{
+                    currentSegment = new Segment({
+                        prevSegment: null,
+                        ctx: ctx,
+                        image: segmentImage1,
+                        speed: moveSpeed,
+                        spawnDirection: tempDir,
+                    });
+                    currentSegment.speed = moveSpeed;
+                    powerUp = false;
+                }
+
 
                 //Shift the old segments down
                 for(var i = 0; i < oldSegments.length; i++){
@@ -186,11 +203,14 @@
                     if(!newBest && score > highestScore){
                         notifText = "HIGH SCORE";
                         newBest = true;
+                        powerupCount++;
                     }else{
                         notifText = "PERFECT";
+                        powerupCount++;
                     }
                     FadeIn();
                 }else{
+                    powerupCount = 0;
                     FadeOut();
                 }
                 touched = true;
@@ -198,7 +218,7 @@
             else{
                 //Change this with a different sound
                 loseAudio.play();
-                gameState = GAME_STATE.FINISH;
+                gameState = GAME_STATE.GAMEOVER;
             }
         }
     }
@@ -303,6 +323,9 @@
         bird = new Image();
         bird.src = "media/bird.png";
 
+        powerImage = new Image();
+        powerImage.src = "media/powerEmpty.png";
+
         //Initialize the backgroundShift value
         backgroundShift = 0;
         cloudPosition = 0;
@@ -310,6 +333,19 @@
 
     //Runs the main game loop
     function Update(){
+
+        switch(powerupCount)
+        {
+            case 0: powerImage.src = "media/powerEmpty.png";
+            break;
+            case 1: powerImage.src = "media/power1.png";
+            break;
+            case 2: powerImage.src = "media/power2.png";
+            break;
+            case 3: powerImage.src = "media/powerFull.png";
+            break;
+        }
+
 
         animID = requestAnimationFrame(Update.bind(this));
 
@@ -456,7 +492,9 @@
         ctx.drawImage(parallaxBack, 0, p1Start + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, p2Start + backgroundShift*1.2,450, 300);
         ctx.drawImage(clouds, cloudPosition, 150,450, 300);
+        ctx.drawImage(powerImage,10,10,100,100);
         ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, 150, 75,75);
+        
         //Draw score
         ctx.font = '50pt Josefin Sans';
         ctx.fillStyle = '#581D99';
