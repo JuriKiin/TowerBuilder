@@ -1,7 +1,4 @@
 LEFT TO DO:
--Get network score? Nik?
--Powerups
-
 
 ASK STEVE IF WE NEED TO IMPLEMENT THIS OR HAVE WE DONE IT:
 - Sound Library. I have an array of audio sources.

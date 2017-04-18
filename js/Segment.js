@@ -161,15 +161,6 @@ class Segment{
     //according to its height
     ShiftDown(){
         this.YPos += this.Height;
-
-        //console.log("clipX: " + this.ClipX);
-        //console.log("X: " + this.XPos);
-        //console.log("clipY: " + this.ClipY);
-        //console.log("Y: " + this.YPos);
-        //console.log("Clip Width: " + this.clipWidth);
-        //console.log("Width: " + this.Width);
-        //console.log("Clip Height: " + this.clipHeight);
-        //console.log("Height: " + this.Height);
     }
 
     //Stops the segment
