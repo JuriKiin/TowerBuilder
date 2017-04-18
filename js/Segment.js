@@ -38,9 +38,10 @@ class Segment{
         if(options.spawnDirection == 0){
             this.XPos = 0;
         }else if(options.spawnDirection == 1)  {
-            this.XPos = this.ctx.canvas.clientWidth - this.width - 1;
+            this.XPos = this.ctx.canvas.clientWidth - this.width - 10;
         }else{
             this.XPos = this.ctx.canvas.clientWidth/2 - this.width/2;
+            this.speed *= -1;
         }
         this.YPos = 400;
         this.ClipY = 0;
@@ -110,6 +111,8 @@ class Segment{
                 return 0;
             }
 
+            this.difference = 0;
+
             //Clip the edges if there is any hangoff
             if(this.xPos < this.prevSegment.xPos){
                 this.difference = this.prevSegment.xPos - this.xPos;
@@ -117,25 +120,19 @@ class Segment{
                 this.xPos += this.difference;
                 this.clipWidth -= this.difference * 6;
                 this.width -= this.difference;
-                if(this.difference < 10){
-                    return 2;
-                }else{
-                    return 1;
-                }
             }
 
             if(this.xPos + this.width > this.prevSegment.xPos + this.prevSegment.width){
                 this.difference = ((this.xPos + this.width) - (this.prevSegment.xPos + this.prevSegment.width));
                 this.clipWidth -= this.difference * 6;
                 this.width -= this.difference;
-                if(this.difference < 10){
-                    return 2;
-                }else{
-                    return 1;
-                }
             }
             //Otherwise, return true if they made a perfect move
-            return 2;
+            if(this.difference < 10){
+                return 2;
+            }else{
+                return 1;
+            }
         }else{
             return 1;
         }

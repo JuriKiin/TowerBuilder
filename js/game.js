@@ -105,9 +105,9 @@
 
     function PlaceSegment(e){
 
+        if(e.target == canvas){
         if(gameState == GAME_STATE.GAMEOVER){
             //Save the highscore
-            SetHighScore();
             highestScore = GetCookie("highscore=");
             oldSegments = [];
             score = 0;
@@ -180,14 +180,18 @@
                     });
                 }
                 else{
+                    var tempSegment = currentSegment;
                     currentSegment = new Segment({
-                        prevSegment: null,
+                        prevSegment: tempSegment,
                         ctx: ctx,
                         image: segmentImage1,
                         speed: moveSpeed,
                         spawnDirection: tempDir,
                     });
-                    currentSegment.speed = moveSpeed;
+                    currentSegment.speed = moveSpeed/2;
+                    currentSegment.width = 100;
+                    currentSegment.ClipX = 0;
+                    currentSegment.ClipWidth = 600;
                     powerUp = false;
                 }
 
@@ -217,9 +221,10 @@
             }
             else{
                 //Change this with a different sound
-                loseAudio.play();
+                SetHighScore();
                 gameState = GAME_STATE.GAMEOVER;
             }
+        }
         }
     }
 
@@ -288,6 +293,13 @@
 
         //Load high score
         highestScore = GetCookie("highscore=");
+
+        //Load the social media buttons on the main screen
+        var socialDiv = document.querySelector('#social');
+        socialDiv.innerHTML += '<a href="https://twitter.com/share" class="twitter-share-button" data-text="Check out this awesome game!" data-url="http://people.rit.edu/nrw6218/330/TowerBuilder" data-hashtags="#TowerBuilder" data-lang="en" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>';
+        socialDiv.innerHTML += '<div id="fb-root"></div><script>(function(d, s, id) {var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.8&appId=114775978535225";fjs.parentNode.insertBefore(js, fjs);}(document, "script", "facebook-jssdk"));</script>';
+        socialDiv.innerHTML += '<div class="fb-share-button" data-href="http://people.rit.edu/nrw6218/330/project2" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpeople.rit.edu%2Fnrw6218%2F330%2Fproject2&amp;src=sdkpreparse">Share</a></div>';
+        socialDiv.innerHTML += '<a class="twitter-timeline"  href="https://twitter.com/hashtag/TowerBuilder" data-widget-id="854445008128290816">#TowerBuilder Tweets</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?"http":"https";if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>';
 
         //Begin the main game loop
         Update();
@@ -492,13 +504,13 @@
         ctx.drawImage(parallaxBack, 0, p1Start + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, p2Start + backgroundShift*1.2,450, 300);
         ctx.drawImage(clouds, cloudPosition, 150,450, 300);
-        ctx.drawImage(powerImage,10,10,100,100);
+        ctx.drawImage(powerImage,350,53,50,50);
         ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, 150, 75,75);
         
         //Draw score
         ctx.font = '50pt Josefin Sans';
         ctx.fillStyle = '#581D99';
-        ctx.fillText(score,205,100);
+        ctx.fillText(score,50,100);
         //Draw perfect move notification
         ctx.font = "40pt Dosis";
         ctx.fillStyle = fadeFill;
