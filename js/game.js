@@ -38,6 +38,7 @@
     //Images
     var parallaxFront;
     var parallaxBack;
+    var goundImage;
     var background;
     var pauseImage1;
     var pauseImage2;
@@ -57,13 +58,14 @@
     var backgroundShift;
     var cloudPosition;
     var backgroundStart = 800;
-    var p1Start = 500;
-    var p2Start = 550;
+    var p1Start = 150;
+    var p2Start = 200;
 
     //Segment variables
     var segmentImage1;
     var segmentImage2;
     var segmentImage3;
+    var bottomSegmentImage;
 
     var currentSegment;
     var oldSegments = [];
@@ -84,7 +86,7 @@
     var birdClipWidth;
     var birdClipHeight;
     var birdXPos = 0;
-    var birdYPos;
+    var birdYPos = 150;
     var birdWidth;
     var birdHeight;
     var birdSpeed = .25;
@@ -123,17 +125,28 @@
             currentSegment = new Segment({
                 prevSegment: null,
                 ctx: ctx,
-                image: segmentImage1,
+                image: bottomSegmentImage,
                 speed: moveSpeed,
                 spawnDirection:  2
             });
             var tempSegment = currentSegment;
             oldSegments.push(tempSegment);
             tempSegment.ShiftDown();
+
+            var randNum = Math.random() * 3;
+            var randSegment;
+            if(randNum < 1){
+                randSegment = segmentImage1;
+            }else if(randNum < 2){
+                randSegment = segmentImage2;
+            }else{
+                randSegment = segmentImage3;
+            }
+
             currentSegment = new Segment({
                 prevSegment: tempSegment,
                 ctx: ctx,
-                image: segmentImage1,
+                image: randSegment,
                 speed: moveSpeed,
                 spawnDirection: Math.random()
             });
@@ -174,13 +187,23 @@
                     tempDir = 1;
                 }
 
+                var randNum = Math.random() * 3;
+                var randSegment;
+                if(randNum < 1){
+                    randSegment = segmentImage1;
+                }else if(randNum < 2){
+                    randSegment = segmentImage2;
+                }else{
+                    randSegment = segmentImage3;
+                }
+
                 if(!powerUp){
                     var tempSegment = currentSegment;
 
                     currentSegment = new Segment({
                     prevSegment: tempSegment,
                     ctx: ctx,
-                    image: segmentImage1,
+                    image: randSegment,
                     speed: moveSpeed,
                     spawnDirection: tempDir
                     });
@@ -190,7 +213,7 @@
                     currentSegment = new Segment({
                         prevSegment: tempSegment,
                         ctx: ctx,
-                        image: segmentImage1,
+                        image: randSegment,
                         speed: moveSpeed,
                         spawnDirection: tempDir,
                     });
@@ -338,10 +361,18 @@
         parallaxFront.src = "media/skyline1.png";
         segmentImage1 = new Image();
         segmentImage1.src = "media/segment1.png";
+        segmentImage2 = new Image();
+        segmentImage2.src = "media/segment2.png";
+        segmentImage3 = new Image();
+        segmentImage3.src = "media/segment3.png";
+        bottomSegmentImage = new Image();
+        bottomSegmentImage.src = "media/bottomSegment.png";
         clouds = new Image();
         clouds.src = "media/clouds.png";
         bird = new Image();
         bird.src = "media/bird.png";
+        groundImage = new Image();
+        groundImage.src = "media/ground.png";
 
         powerImage = new Image();
         powerImage.src = "media/powerEmpty.png";
@@ -401,6 +432,7 @@
                 if(birdXPos > canvas.clientWidth*2)
                 {
                     birdXPos = 0-200;
+                    birdYPos = 100 + Math.random() * 200;
                 }
                 DrawHUD();
             //Draw the segments
@@ -438,8 +470,8 @@
     function DrawMenu(){
         ctx.drawImage(background, 0, -backgroundStart + backgroundShift, 450, 1600);
         ctx.drawImage(clouds, cloudPosition, 150,450, 300);
-        ctx.drawImage(parallaxBack, 0, p1Start, 450, 300);
-        ctx.drawImage(parallaxFront, 0, p2Start,450, 300);
+        ctx.drawImage(parallaxBack, 0, 495, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 500,450, 300);
         //Title text
         ctx.fillStyle = '#581D99';
         ctx.font = "70px Josefin Sans";
@@ -516,9 +548,10 @@
         ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
         ctx.drawImage(parallaxBack, 0, p1Start + backgroundShift*1.1, 450, 300);
         ctx.drawImage(parallaxFront, 0, p2Start + backgroundShift*1.2,450, 300);
-        ctx.drawImage(clouds, cloudPosition, 150,450, 300);
+        ctx.drawImage(groundImage,0,500+backgroundShift,450,300);
+        ctx.drawImage(clouds, cloudPosition, backgroundShift - 500,450, 300);
         ctx.drawImage(powerImage,350,53,50,50);
-        ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, 150, 75,75);
+        ctx.drawImage(bird, 360*currentFrame, 0, 350,350, birdXPos, birdYPos, 75,75);
         
         //Draw score
         ctx.font = '50pt Josefin Sans';
