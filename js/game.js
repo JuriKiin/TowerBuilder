@@ -120,6 +120,7 @@
         else if(gameState == GAME_STATE.MENU){
             gameState = GAME_STATE.GAME;
             backgroundShift = 0;
+            powerupCount = 0;
             oldSegments = [];   //Add the segment to the list of old.
             notifText = '';
             currentSegment = new Segment({
@@ -162,12 +163,18 @@
                 powerupCount = -1;
                 //Make the width of the next segment full again.
             }
-
+            console.log(currentSegment);
 
             currentSegment.StopSegment();
             var tempOutput = currentSegment.CheckEdges();
+
+            if(currentSegment.width < 10){
+                SetHighScore();
+                gameState = GAME_STATE.GAMEOVER;
+            }
+
             if(tempOutput > 0){
-                
+
                 placementAudio.play();
 
                 score++;                  //Increment the score.
@@ -211,19 +218,18 @@
                 else{
                     var tempSegment = currentSegment;
                     currentSegment = new Segment({
-                        prevSegment: tempSegment,
+                        prevSegment: null,
                         ctx: ctx,
                         image: randSegment,
                         speed: moveSpeed,
-                        spawnDirection: tempDir,
+                        spawnDirection: tempDir
                     });
                     currentSegment.speed = moveSpeed/2;
-                    currentSegment.width = 100;
                     currentSegment.ClipX = 0;
                     currentSegment.ClipWidth = 600;
+                    
                     powerUp = false;
                 }
-
 
                 //Shift the old segments down
                 for(var i = 0; i < oldSegments.length; i++){
@@ -241,9 +247,11 @@
                         notifText = "PERFECT";
                         powerupCount++;
                     }
+
                     FadeIn();
                 }else{
                     powerupCount = 0;
+                    fadeAlpha = 1;
                     FadeOut();
                 }
                 touched = true;
@@ -331,22 +339,22 @@
         socialDiv.innerHTML += '<div class="socialLink" class="fb-share-button" data-href="http://people.rit.edu/nrw6218/330/project2" data-layout="button" data-size="large" data-mobile-iframe="true"><a class="fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fpeople.rit.edu%2Fnrw6218%2F330%2Fproject2&amp;src=sdkpreparse">Share</a></div>';
         socialDiv.innerHTML += "<h2>See What People Are Saying</h2>";
         socialDiv.innerHTML += '<a class="twitter-timeline"  href="https://twitter.com/hashtag/TowerBuilder" data-widget-id="854445008128290816">#TowerBuilder Tweets</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?"http":"https";if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>';
-
+        
         //Begin the main game loop
         Update();
     }
 
 
     function checkKey(key){
-        if(key.keyCode == 32 && gameState != GAME_STATE.PAUSE)
-        {
-            prevState = gameState;
-            gameState = GAME_STATE.PAUSE;
-        }
-        else
-        {
+        if(key.keyCode == 32){
+            if(gameState != GAME_STATE.PAUSE){
+                prevState = gameState;
+                gameState = GAME_STATE.PAUSE;
+            }
+            else{
             gameState = prevState;
             animID = requestAnimationFrame(Update.bind(this));
+            }  
         }
     }
 
@@ -483,15 +491,17 @@
 
     //Draws the interface for the pause menu
     function DrawPause(){
-        ctx.clearRect(0,0,canvas.clientWidth,canvas.clientHeight);
-        ctx.drawImage(background, 0, -800 + backgroundShift, 450, 1600);
-        ctx.drawImage(parallaxBack, 0, p1Start + backgroundShift*1.1, 450, 300);
-        ctx.drawImage(parallaxFront, 0, p2Start + backgroundShift*1.2,450, 300);
+        ctx.drawImage(background, 0, -backgroundStart + backgroundShift, 450, 1600);
         ctx.drawImage(clouds, cloudPosition, 150,450, 300);
-        ctx.font = "45pt Josefin Sans";
-        ctx.fillStyle = 'rgba(250,75,85,1)';
-        ctx.fillStyle = fadeFill;
-        ctx.fillText("Paused",135,300);
+        ctx.drawImage(parallaxBack, 0, 495, 450, 300);
+        ctx.drawImage(parallaxFront, 0, 500,450, 300);
+        //Title text
+        ctx.fillStyle = '#581D99';
+        ctx.font = "70px Josefin Sans";
+        ctx.fillText("Tower Builder",35,100);
+        //'tap to continue' text
+        ctx.font = "40px Dosis";
+        ctx.fillText("Paused",160,500);
     }
 
     //Draws the interface for the game over screen
@@ -560,7 +570,7 @@
         //Draw perfect move notification
         ctx.font = "40pt Dosis";
         ctx.fillStyle = fadeFill;
-        ctx.fillText(notifText,135,300);
+        ctx.fillText(notifText,115,300);
         if(!touched){
             ctx.font = "20pt Dosis";
             ctx.fillText("Tap Anywhere to Stack the Block",60,300);
@@ -572,14 +582,13 @@
         if(fadeAlpha < 1){
             fadeAlpha += 0.1;
         }
-        //fadeFill = "rgba(256,256,256," + fadeAlpha + ")";
         fadeFill = 'rgba(250,75,85,'+fadeAlpha+')';
 
         //Loop while the alpha is not 0 or 1
         if(fadeAlpha <= 1){
             requestAnimationFrame(FadeIn);
         }else{
-            setTimeout(FadeOut,1500);
+            setTimeout(FadeOut,200);
         }
     }
 

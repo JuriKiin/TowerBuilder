@@ -27,6 +27,7 @@ class Segment{
              this.ClipWidth = this.prevSegment.ClipWidth - this.prevSegment.difference/2;
              this.speed = options.speed;
         }
+
         //Sprite image
         this.Image = options.image;
         this.height = 50;
@@ -38,7 +39,8 @@ class Segment{
         if(options.spawnDirection == 0){
             this.XPos = 0;
         }else if(options.spawnDirection == 1)  {
-            this.XPos = this.ctx.canvas.clientWidth - this.width - 10;
+            this.XPos = this.ctx.canvas.clientWidth - this.width - 5;
+            this.speed *= 1;
         }else{
             this.XPos = this.ctx.canvas.clientWidth/2 - this.width/2;
             this.speed *= -1;
@@ -111,14 +113,15 @@ class Segment{
                 return 0;
             }
 
-            this.difference = 0;
-
             //Clip the edges if there is any hangoff
             if(this.xPos < this.prevSegment.xPos){
                 this.difference = this.prevSegment.xPos - this.xPos;
                 this.clipX += this.difference * 6;
                 this.xPos += this.difference;
                 this.clipWidth -= this.difference * 6;
+                if(this.clipWidth < 0){
+                    this.clipWidth = 0;
+                }
                 this.width -= this.difference;
             }
 
@@ -149,7 +152,7 @@ class Segment{
             this.XPos = 0;
             this.speed *= -1;
         }
-        if(this.xPos + this.width >= this.ctx.canvas.width){
+        if(this.xPos + this.width >= this.ctx.canvas.clientWidth){
             this.speed *= -1;
         }
 
