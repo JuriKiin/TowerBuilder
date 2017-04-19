@@ -33,7 +33,6 @@
     var highestScore;
     var newBest = false;
     var moveSpeed = 5;
-    var firstSpawn = true;
 
     //Images
     var parallaxFront;
@@ -163,7 +162,6 @@
                 powerupCount = -1;
                 //Make the width of the next segment full again.
             }
-            console.log(currentSegment);
 
             currentSegment.StopSegment();
             var tempOutput = currentSegment.CheckEdges();
@@ -218,14 +216,15 @@
                 else{
                     var tempSegment = currentSegment;
                     currentSegment = new Segment({
-                        prevSegment: null,
+                        prevSegment: tempSegment,
                         ctx: ctx,
                         image: randSegment,
                         speed: moveSpeed,
-                        spawnDirection: tempDir
+                        spawnDirection: 0
                     });
                     currentSegment.speed = moveSpeed/2;
                     currentSegment.ClipX = 0;
+                    currentSegment.width = 100;
                     currentSegment.ClipWidth = 600;
                     
                     powerUp = false;

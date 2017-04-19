@@ -46,6 +46,7 @@ class Segment{
             this.speed *= -1;
         }
         this.YPos = 400;
+        this.firstSpawn = options.firstSpawn;
         this.ClipY = 0;
     }
 
@@ -104,7 +105,7 @@ class Segment{
     //Checks the edges of this Segment
     //with the previous segment
     CheckEdges(){
-        if(this.prevSegment != null){
+        if(!this.firstSpawn){
             //Return false if this segment and the previous segment do not line up
             if(this.xPos > this.prevSegment.xPos + this.prevSegment.width){
                 return 0;
